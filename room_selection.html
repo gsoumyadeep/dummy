@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Office Seat Manager - Room or Seat</title>
+    <style>
+        /* Reset & Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        /* Full Page Styling */
+        body {
+            background: linear-gradient(135deg, #f1f1f1, #d9d9d9);
+            color: #333;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            background: #333;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links li {
+            display: inline;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #ff5733;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 100px 20px 50px;
+            background: url('https://images.pexels.com/photos/3184328/pexels-photo-3184328.jpeg') no-repeat center center/cover;
+            color: white;
+            position: relative;
+            margin-top: 60px;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 42px;
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            font-size: 18px;
+            max-width: 600px;
+            margin: auto;
+        }
+
+        /* Booking Options */
+        .booking-container {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            padding: 60px 20px;
+            flex-wrap: wrap;
+        }
+
+        /* Card Styles */
+        .card {
+            width: 320px;
+            height: 220px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: bold;
+            text-align: center;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        /* Card Backgrounds */
+        .seat {
+            background-image: url("https://images.pexels.com/photos/3184328/pexels-photo-3184328.jpeg");
+        }
+
+        .conference {
+            background-image: url("https://images.pexels.com/photos/3183197/pexels-photo-3183197.jpeg");
+        }
+
+        .meeting {
+            background-image: url("https://images.pexels.com/photos/3184309/pexels-photo-3184309.jpeg");
+        }
+
+        .collaborative {
+            background-image: url("https://images.pexels.com/photos/3183191/pexels-photo-3183191.jpeg");
+        }
+
+        .quiet {
+            background-image: url("https://images.pexels.com/photos/3184308/pexels-photo-3184308.jpeg");
+        }
+
+        /* Dark Overlay */
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
+            transition: background 0.3s ease-in-out;
+        }
+
+        /* Hover Effects */
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .card:hover::before {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        /* Text Overlay */
+        .card span {
+            position: relative;
+            z-index: 2;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="logo">Office Seat Manager</div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="bookings.html">Bookings</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="hero-content">
+            <h1>Choose Your Booking Type</h1>
+            <p>Book a seat or a room based on your needs. Choose from normal seats, conference rooms, and more!</p>
+        </div>
+    </header>
+
+    <!-- Booking Selection -->
+    <section class="booking-container">
+        <div class="card conference" onclick="allocateConferenceRoom()">
+            <span>Conference Room</span>
+        </div>
+        <div class="card meeting" onclick="allocateMeetingRoom()">
+            <span>Meeting Room</span>
+        </div>
+    </section>
+
+    <!-- JavaScript -->
+    <script>
+        function allocateMeetingRoom() {
+            // Retrieve stored floor and members data from localStorage
+            const floor = localStorage.getItem("floor");
+            const members = parseInt(localStorage.getItem("members"), 10);
+
+            if (!floor || !members) {
+                alert("Floor or member count is missing. Please complete the booking first.");
+                return;
+            }
+
+            // Prepare data to send to backend
+            const requestData = {
+                floor: floor,
+                members: members
+            };
+
+            // Send request to allocate table
+            fetch("http://localhost:5000/allocate-table", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(requestData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.tableId) {
+                    alert(`Meeting room booked successfully! Table ID: ${data.tableId}`);
+                    window.location.href = "confirmation.html"; // Redirect to confirmation page
+                } else {
+                    alert("No available tables. Please try again later.");
+                }
+            })
+            .catch(error => {
+                console.error("Error allocating table:", error);
+                alert("Failed to allocate table. Please try again.");
+            });
+        }
+        function allocateConferenceRoom() {
+            // Retrieve floor from localStorage
+            const floor = localStorage.getItem("floor");
+    
+            if (!floor) {
+                alert("Floor selection is missing. Please complete the booking first.");
+                return;
+            }
+    
+            // Prepare data for backend
+            const requestData = { floor: floor };
+    
+            // Send request to allocate conference room
+            fetch("http://localhost:5000/allocate-conference-room", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(requestData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.roomId) {
+                    alert(`Conference room booked successfully! Room ID: ${data.roomId}`);
+                    window.location.href = "confirmation.html"; // Redirect to confirmation page
+                } else {
+                    alert("No available conference rooms. Please try again later.");
+                }
+            })
+            .catch(error => {
+                console.error("Error allocating conference room:", error);
+                alert("Failed to allocate conference room. Please try again.");
+            });
+        }
+    </script>
+
+</body>
+</html>
